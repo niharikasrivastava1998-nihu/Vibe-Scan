@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const API = 'http://localhost:3001';
+import { API_BASE_URL } from '../config';
 
 export const useEmailAnalysis = () => {
   const [loading, setLoading] = useState(false);
@@ -8,7 +8,7 @@ export const useEmailAnalysis = () => {
   const analyzeEmail = async (payload) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/analyze/email`, {
+      const res = await fetch(`${API_BASE_URL}/api/analyze/email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

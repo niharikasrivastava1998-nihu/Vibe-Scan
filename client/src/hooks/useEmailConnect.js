@@ -1,16 +1,17 @@
 import { useState } from 'react';
 
-const API = 'http://localhost:3001';
+import { API_BASE_URL } from '../config';
 
 export const useEmailConnect = () => {
   const [emails, setEmails] = useState([]);
 
   const connectGmail = () => {
-    window.location.href = `${API}/auth/google`;
+    const redirect = encodeURIComponent(window.location.origin);
+    window.location.href = `${API_BASE_URL}/auth/google?redirect=${redirect}`;
   };
 
   const fetchInbox = async (source = 'gmail') => {
-    const res = await fetch(`${API}/api/email/inbox?source=${source}`, { credentials: 'include' });
+    const res = await fetch(`${API_BASE_URL}/api/email/inbox?source=${source}`, { credentials: 'include' });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to fetch inbox');
     setEmails(data.emails || []);
@@ -18,7 +19,7 @@ export const useEmailConnect = () => {
   };
 
   const connectImap = async (payload) => {
-    const res = await fetch(`${API}/api/email/imap/connect`, {
+    const res = await fetch(`${API_BASE_URL}/api/email/imap/connect`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -31,7 +32,7 @@ export const useEmailConnect = () => {
   };
 
   const sendEmail = async (payload) => {
-    const res = await fetch(`${API}/api/email/send`, {
+    const res = await fetch(`${API_BASE_URL}/api/email/send`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

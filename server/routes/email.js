@@ -8,12 +8,14 @@ const router = Router();
 router.get('/inbox', async (req, res) => {
   try {
     const source = req.query.source || 'gmail';
+
     if (source === 'imap') {
       const inbox = req.session.imapInbox || [];
       return res.json({ source, emails: inbox.slice(0, 20) });
     }
 
     const emails = await fetchGmailInbox(req.user?.tokens);
+    req.session.lastGmailInbox = emails;
     return res.json({ source: 'gmail', emails });
   } catch (error) {
     return res.status(500).json({ error: 'Failed to fetch inbox.', detail: error.message });
@@ -22,7 +24,24 @@ router.get('/inbox', async (req, res) => {
 
 router.get('/thread/:id', async (req, res) => {
   const { id } = req.params;
-  res.json({ id, thread: 'Thread retrieval is connected; enhance with provider-specific full thread fetch.' });
+  const all = [...(req.session.lastGmailInbox || []), ...(req.session.imapInbox || [])];
+  const selected = all.find((m) => m.id === id || m.threadId === id);
+
+  if (!selected) {
+    return res.status(404).json({ error: 'Thread not found in current session cache.' });
+  }
+
+  return res.json({
+    id,
+    thread: [
+      {
+        sender: selected.sender,
+        subject: selected.subject,
+        body: selected.body || selected.snippet,
+        date: selected.date,
+      },
+    ],
+  });
 });
 
 router.post('/imap/connect', async (req, res) => {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const API = 'http://localhost:3001';
+import { API_BASE_URL } from '../config';
 
 export const usePostAnalysis = () => {
   const [loading, setLoading] = useState(false);
@@ -9,7 +9,7 @@ export const usePostAnalysis = () => {
   const analyze = async ({ platform, text }) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/analyze/post`, {
+      const res = await fetch(`${API_BASE_URL}/api/analyze/post`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ platform, text }),
@@ -23,5 +23,5 @@ export const usePostAnalysis = () => {
     }
   };
 
-  return { loading, result, analyze };
+  return { loading, result, analyze, setResult };
 };
