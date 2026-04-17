@@ -3,6 +3,9 @@
   "private": true,
   "scripts": {
     "dev:client": "cd client && npm run dev",
-    "dev:server": "cd server && npm run dev"
+    "dev:server": "cd server && npm run dev",
+    "check:server": "node --check server/server.js && node --check server/routes/analyze.js && node --check server/routes/email.js && node --check server/routes/auth.js && node --check server/services/openaiService.js && node --check server/services/gmailService.js && node --check server/services/imapService.js && node --check server/services/mailerService.js",
+    "check:client": "node --check client/src/hooks/usePostAnalysis.js && node --check client/src/hooks/useEmailAnalysis.js && node --check client/src/hooks/useEmailConnect.js && node --check client/src/hooks/useHistory.js && node --check client/src/hooks/useRateLimit.js && node --check client/src/config.js",
+    "check": "npm run check:server && npm run check:client"
   }
 }

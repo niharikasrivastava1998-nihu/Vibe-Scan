@@ -73,3 +73,16 @@ If your source of truth is GitHub, use this approach:
 - `POST /api/email/send`
 - `GET /auth/google`
 - `GET /auth/google/callback`
+
+
+## Merge-request friendly command (non-restricted)
+
+If your CI environment blocks package downloads, run this command for MR validation:
+
+```bash
+npm run check
+```
+
+This performs syntax checks only and does **not** download dependencies, so it works in restricted runners.
+
+A GitHub Action is included at `.github/workflows/merge-ready.yml` and runs the same command so required checks can pass before merge.
