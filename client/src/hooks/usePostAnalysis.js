@@ -6,13 +6,13 @@ export const usePostAnalysis = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
-  const analyze = async ({ platform, text }) => {
+  const analyze = async ({ platform, text, goal, audience, imageMeta }) => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/api/analyze/post`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ platform, text }),
+        body: JSON.stringify({ platform, text, goal, audience, imageMeta }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');

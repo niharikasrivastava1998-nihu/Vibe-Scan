@@ -13,13 +13,14 @@ export default function EmailAnalysis({ analysis, onUseReply }) {
           <p className="font-medium">{analysis.intentLabel}</p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">Urgency</p>
-          <p className="font-medium">{analysis.urgencyLevel}</p>
-          <p className="text-xs text-slate-500">{analysis.urgencyReason}</p>
+          <p className="text-xs text-slate-500">Traction chance</p>
+          <p className="font-medium">{analysis.tractionProbability ?? 0}%</p>
+          <p className="text-xs text-slate-500">Reply {analysis.expectedReplyRate || 'n/a'} · Click {analysis.expectedClickRate || 'n/a'}</p>
         </div>
         <div>
-          <p className="text-xs text-slate-500">Mood</p>
-          <p className="font-medium">{analysis.senderMood}</p>
+          <p className="text-xs text-slate-500">Subject Strength</p>
+          <p className="font-medium">{analysis.subjectStrength ?? 0}/10</p>
+          <p className="text-xs text-slate-500">{analysis.urgencyReason}</p>
         </div>
       </div>
 
@@ -38,18 +39,18 @@ export default function EmailAnalysis({ analysis, onUseReply }) {
       })}
 
       <div>
-        <h4 className="mb-1 text-sm font-semibold">Key Points</h4>
+        <h4 className="mb-1 text-sm font-semibold">Recommendations to increase traction</h4>
         <ul className="list-disc pl-5 text-sm">
-          {(analysis.keyPoints || []).map((k, i) => (
+          {(analysis.recommendations || []).map((k, i) => (
             <li key={i}>{k}</li>
           ))}
         </ul>
       </div>
 
       <div>
-        <h4 className="mb-1 text-sm font-semibold">Action Items</h4>
+        <h4 className="mb-1 text-sm font-semibold">Key Points</h4>
         <ul className="list-disc pl-5 text-sm">
-          {(analysis.actionItems || []).map((k, i) => (
+          {(analysis.keyPoints || []).map((k, i) => (
             <li key={i}>{k}</li>
           ))}
         </ul>

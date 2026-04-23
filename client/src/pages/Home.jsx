@@ -19,6 +19,9 @@ export default function Home() {
   const [mode, setMode] = useState('social');
   const [platform, setPlatform] = useState('Twitter/X');
   const [postText, setPostText] = useState('');
+  const [postGoal, setPostGoal] = useState('Boost engagement');
+  const [postAudience, setPostAudience] = useState('Existing followers');
+  const [postImages, setPostImages] = useState([]);
   const [emailAnalysis, setEmailAnalysis] = useState(null);
   const [composeSeed, setComposeSeed] = useState(null);
   const [dark, setDark] = useState(false);
@@ -46,6 +49,16 @@ export default function Home() {
     return operation();
   };
 
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files || []);
+    setPostImages(files.map((file) => ({
+      id: `${file.name}-${file.size}-${file.lastModified}`,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    })));
+  };
+
   const analyzePost = async () => {
     if (!postText.trim()) {
       toast.error('Post text is required');
@@ -54,7 +67,14 @@ export default function Home() {
 
     await withRateLimit(async () => {
       try {
-        const data = await analyze({ platform, text: postText });
+        const data = await analyze({
+          platform,
+          text: postText,
+          goal: postGoal,
+          audience: postAudience,
+          imageMeta: postImages,
+        });
+
         postHistory.push({
           platform,
           subject: platform,
@@ -80,6 +100,8 @@ export default function Home() {
           subject: email.subject || 'No subject',
           body: email.body || email.snippet,
           threadHistory: email.threadHistory || '',
+          campaignType: email.campaignType || 'General Email Campaign',
+          audience: email.audience || 'Mixed audience',
         });
 
         setEmailAnalysis(data);
@@ -130,7 +152,7 @@ export default function Home() {
     }
   };
 
-  const analyzePastedEmail = async (text) => {
+  const analyzePastedEmail = async (text, context = {}) => {
     if (!text.trim()) {
       toast.error('Please paste email text first.');
       return;
@@ -141,6 +163,8 @@ export default function Home() {
       subject: 'Manual Input',
       body: text,
       snippet: text.slice(0, 120),
+      campaignType: context.campaignType,
+      audience: context.audience,
     });
   };
 
@@ -180,6 +204,12 @@ export default function Home() {
                     setPlatform={setPlatform}
                     text={postText}
                     setText={setPostText}
+                    goal={postGoal}
+                    setGoal={setPostGoal}
+                    audience={postAudience}
+                    setAudience={setPostAudience}
+                    images={postImages}
+                    onImageUpload={handleImageUpload}
                     onAnalyze={analyzePost}
                     loading={postLoading}
                   />
